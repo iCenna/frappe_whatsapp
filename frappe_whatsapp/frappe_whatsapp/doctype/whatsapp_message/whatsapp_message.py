@@ -276,7 +276,7 @@ class WhatsAppMessage(Document):
                     "parameters": [{
                         "type": "document",
                         "document": {
-                            "id": self._media_id,
+                            "id": self._session_id,
                             "filename": f"{self.get('reference_name')}.pdf"
                         }
                     }]
@@ -435,12 +435,6 @@ class WhatsAppMessage(Document):
             headers=headers,
             data=payload
         )
-        try:
-            response_s = frappe.flags.integration_request
-            frappe.log_error("Media Response", response_s.text)
-        except:
-            pass
-
         self._media_id = response['h']
 
 
