@@ -8,6 +8,9 @@ from frappe.integrations.utils import make_post_request
 
 from frappe_whatsapp.utils import get_whatsapp_account, format_number
 
+from frappe.utils.pdf import get_pdf
+
+
 class WhatsAppMessage(Document):
     def validate(self):
         self.set_whatsapp_account()
@@ -241,6 +244,26 @@ class WhatsAppMessage(Document):
                             }
                         }]
                     })
+            elif template.header_type == 'IMAGE' and self.get('reference_doctype') and self.get('reference_name'):
+                print_format_html = frappe.get_print(doctype=self.get('reference_doctype'),
+                                                     name=self.get('reference_name'))
+
+                file_content = get_pdf(print_format_html)
+                file_size_bytes = len(file_content)
+
+                self.get_session_id(file_size_bytes)
+                self.get_media_id(file_content)
+                if self._media_id:
+                    data['template']['components'].append({
+                        "type": "header",
+                        "parameters": [{
+                            "type": "document",
+                            "document": {
+                                "id": self._media_id,
+                                "filename": f"{self.get('reference_name')}.pdf"
+                            }
+                        }]
+                    })
 
             elif template.sample:
                 if template.header_type == 'IMAGE':
@@ -367,6 +390,53 @@ class WhatsAppMessage(Document):
             res = frappe.flags.integration_request.json().get("error", {})
             error_message = res.get("Error", res.get("message"))
             frappe.log_error("WhatsApp API Error", f"{error_message}\n{res}")
+
+
+    def get_settings(self):
+        """Get whatsapp settings."""
+        settings = frappe.get_doc("WhatsApp Account", self.whatsapp_account)
+        self._token = settings.get_password("token")
+        self._url = settings.url
+        self._version = settings.version
+        self._business_id = settings.business_id
+        self._app_id = settings.app_id
+
+        self._headers = {
+            "authorization": f"Bearer {self._token}",
+            "content-type": "application/json",
+        }
+
+
+    def get_session_id(self,file_length):
+        """Upload media."""
+        self.get_settings()
+        payload = {
+            'file_length': file_length,
+            'file_type': "application/pdf",
+            'messaging_product': 'whatsapp'
+        }
+        response = make_post_request(
+            f"{self._url}/{self._version}/{self._app_id}/uploads",
+            headers=self._headers,
+            data=json.loads(json.dumps(payload))
+        )
+        self._session_id = response['id']
+
+
+    def get_media_id(self,file_content):
+        self.get_settings()
+
+        headers = {
+                "authorization": f"OAuth {self._token}"
+            }
+        payload = file_content
+        response = make_post_request(
+            f"{self._url}/{self._version}/{self._session_id}",
+            headers=headers,
+            data=payload
+        )
+        self._media_id = response['h']
+
 
 
 def on_doctype_update():
