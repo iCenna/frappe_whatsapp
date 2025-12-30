@@ -28,10 +28,10 @@ class WhatsAppMessage(Document):
         from_number = format_number(number)
 
         if (
-            self.has_value_changed("profile_name")
-            and self.profile_name
-            and from_number
-            and frappe.db.exists("WhatsApp Profiles", {"number": from_number})
+                self.has_value_changed("profile_name")
+                and self.profile_name
+                and from_number
+                and frappe.db.exists("WhatsApp Profiles", {"number": from_number})
         ):
             profile_id = frappe.get_value("WhatsApp Profiles", {"number": from_number}, "name")
             frappe.db.set_value("WhatsApp Profiles", profile_id, "profile_name", self.profile_name)
@@ -57,6 +57,7 @@ class WhatsAppMessage(Document):
                 self.whatsapp_account = default_whatsapp_account.name
 
     """Send whats app messages."""
+
     def before_insert(self):
         """Send message."""
         self.set_whatsapp_account()
@@ -213,7 +214,7 @@ class WhatsAppMessage(Document):
                 for field_name in field_names:
                     value = custom_values.get(field_name.strip())
                     parameters.append({"type": "text", "text": value})
-                    template_parameters.append(value)                    
+                    template_parameters.append(value)
 
             else:
                 ref_doc = frappe.get_doc(self.reference_doctype, self.reference_name)
@@ -263,16 +264,20 @@ class WhatsAppMessage(Document):
                             }
                         }]
                     })
-        if self.get('reference_doctype') and self.get('reference_name'):
+        if self.get('reference_doctype') and self.get('reference_name') and self.get('reference_doctype') == "POS Invoice":
+            print_format = "POS Provider Invoice"
+            letter_head = frappe.db.get_value("Company",
+                                              frappe.db.get_value("POS Invoice",
+                                                                  self.get('reference_name'),
+                                                                  'company'),
+                                              'default_letter_head')
             print_format_html = frappe.get_print(doctype=self.get('reference_doctype'),
-                                                 name=self.get('reference_name'))
+                                                 name=self.get('reference_name'),
+                                                 print_format=print_format,
+                                                 letterhead=letter_head)
 
             file_content = get_pdf(print_format_html)
-            file_size_bytes = len(file_content)
-
-            # self.get_session_id(file_size_bytes)
-            # self.get_media_id(file_content)
-            self.upload_media(file_content,self.get('reference_name'))
+            self.upload_media(file_content, self.get('reference_name'))
             if self._media_id:
                 data['template']['components'].append({
                     "type": "header",
@@ -354,7 +359,7 @@ class WhatsAppMessage(Document):
     def format_number(self, number):
         """Format number."""
         if number.startswith("+"):
-            number = number[1 : len(number)]
+            number = number[1: len(number)]
 
         return number
 
@@ -394,7 +399,6 @@ class WhatsAppMessage(Document):
             error_message = res.get("Error", res.get("message"))
             frappe.log_error("WhatsApp API Error", f"{error_message}\n{res}")
 
-
     def get_settings(self):
         """Get whatsapp settings."""
         settings = frappe.get_doc("WhatsApp Account", self.whatsapp_account)
@@ -410,45 +414,13 @@ class WhatsAppMessage(Document):
             "content-type": "application/json",
         }
 
-
-    def get_session_id(self,file_length):
-        """Upload media."""
-        self.get_settings()
-        payload = {
-            'file_length': file_length,
-            'file_type': "application/pdf",
-            'messaging_product': 'whatsapp'
-        }
-        response = make_post_request(
-            f"{self._url}/{self._version}/{self._app_id}/uploads",
-            headers=self._headers,
-            data=json.loads(json.dumps(payload))
-        )
-        self._session_id = response['id']
-
-
-    def get_media_id(self,file_content):
-        self.get_settings()
-
-        headers = {
-                "authorization": f"OAuth {self._token}"
-            }
-        payload = file_content
-        response = make_post_request(
-            f"{self._url}/{self._version}/{self._session_id}",
-            headers=headers,
-            data=payload
-        )
-        self._media_id = response['h']
-
-
-    def upload_media(self,file_content,file_name):
+    def upload_media(self, file_content, file_name):
         self.get_settings()
 
         headers = {
             "authorization": f"OAuth {self._token}"
         }
-        url =  f"{self._url}/{self._version}/{self._number_id}/media"
+        url = f"{self._url}/{self._version}/{self._number_id}/media"
 
         files = {
             "file": (f"{file_name}.pdf", file_content, "application/pdf")
@@ -459,14 +431,15 @@ class WhatsAppMessage(Document):
             "type": "application/pdf"
         }
         resp = requests.post(
-           url,
+            url,
             headers=headers,
             files=files,
             data=data
         )
-        frappe.log_error("Media Upload",resp.text)
-        self._media_id = resp.json()["id"]
-
+        try:
+            self._media_id = resp.json()["id"]
+        except Exception as e:
+            frappe.throw(f"Failed to Send Message {str(e)}")
 
 
 def on_doctype_update():
