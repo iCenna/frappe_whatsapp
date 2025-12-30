@@ -1,6 +1,9 @@
 # Copyright (c) 2022, Shridhar Patil and contributors
 # For license information, please see license.txt
 import json
+
+import requests
+
 import frappe
 from frappe import _, throw
 from frappe.model.document import Document
@@ -267,16 +270,16 @@ class WhatsAppMessage(Document):
             file_content = get_pdf(print_format_html)
             file_size_bytes = len(file_content)
 
-            self.get_session_id(file_size_bytes)
-            self.get_media_id(file_content)
-            frappe.log_error("MEDIA ID",str(self._session_id))
+            # self.get_session_id(file_size_bytes)
+            # self.get_media_id(file_content)
+            self.upload_media(file_content)
             if self._media_id:
                 data['template']['components'].append({
                     "type": "header",
                     "parameters": [{
                         "type": "document",
                         "document": {
-                            "id": self._session_id,
+                            "id": self._media_id,
                             "filename": f"{self.get('reference_name')}.pdf"
                         }
                     }]
@@ -400,6 +403,7 @@ class WhatsAppMessage(Document):
         self._version = settings.version
         self._business_id = settings.business_id
         self._app_id = settings.app_id
+        self._number_id = settings.phone_id
 
         self._headers = {
             "authorization": f"Bearer {self._token}",
@@ -436,6 +440,32 @@ class WhatsAppMessage(Document):
             data=payload
         )
         self._media_id = response['h']
+
+
+    def upload_media(self,file_content):
+        self.get_settings()
+
+        headers = {
+            "authorization": f"OAuth {self._token}"
+        }
+        url =  f"{self._url}/{self._version}/{self._phone_id}/media"
+
+        files = {
+            "file": file_content
+        }
+
+        data = {
+            "messaging_product": "whatsapp",
+            "type": "application/pdf"
+        }
+        resp = requests.post(
+           url,
+            headers=headers,
+            files=files,
+            data=data
+        )
+        frappe.log_error("Media Upload",resp.text)
+        self._media_id = resp.json()["id"]
 
 
 
