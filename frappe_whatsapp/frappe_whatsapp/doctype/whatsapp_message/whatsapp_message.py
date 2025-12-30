@@ -232,7 +232,7 @@ class WhatsAppMessage(Document):
             if self.body_param is not None:
                 params = list(json.loads(self.body_param).values())
                 for param in params:
-                    parameters.append({"type": "text", "text": param})
+                    parameters.append({"type": "text",'parameter_name':"clinic_name", "text": param})
                     template_parameters.append(param)
 
             self.template_parameters = json.dumps(template_parameters)
