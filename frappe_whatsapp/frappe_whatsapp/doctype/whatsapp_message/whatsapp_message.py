@@ -272,7 +272,7 @@ class WhatsAppMessage(Document):
 
             # self.get_session_id(file_size_bytes)
             # self.get_media_id(file_content)
-            self.upload_media(file_content)
+            self.upload_media(file_content,self.get('reference_name'))
             if self._media_id:
                 data['template']['components'].append({
                     "type": "header",
@@ -442,7 +442,7 @@ class WhatsAppMessage(Document):
         self._media_id = response['h']
 
 
-    def upload_media(self,file_content):
+    def upload_media(self,file_content,file_name):
         self.get_settings()
 
         headers = {
@@ -451,7 +451,7 @@ class WhatsAppMessage(Document):
         url =  f"{self._url}/{self._version}/{self._number_id}/media"
 
         files = {
-            "file": file_content
+            "file": (f"{file_name}.pdf", file_content, "application/pdf")
         }
 
         data = {
