@@ -244,26 +244,6 @@ class WhatsAppMessage(Document):
                             }
                         }]
                     })
-            elif template.header_type == 'IMAGE' and self.get('reference_doctype') and self.get('reference_name'):
-                print_format_html = frappe.get_print(doctype=self.get('reference_doctype'),
-                                                     name=self.get('reference_name'))
-
-                file_content = get_pdf(print_format_html)
-                file_size_bytes = len(file_content)
-
-                self.get_session_id(file_size_bytes)
-                self.get_media_id(file_content)
-                if self._media_id:
-                    data['template']['components'].append({
-                        "type": "header",
-                        "parameters": [{
-                            "type": "document",
-                            "document": {
-                                "id": self._media_id,
-                                "filename": f"{self.get('reference_name')}.pdf"
-                            }
-                        }]
-                    })
 
             elif template.sample:
                 if template.header_type == 'IMAGE':
@@ -280,7 +260,26 @@ class WhatsAppMessage(Document):
                             }
                         }]
                     })
+        if self.get('reference_doctype') and self.get('reference_name'):
+            print_format_html = frappe.get_print(doctype=self.get('reference_doctype'),
+                                                 name=self.get('reference_name'))
 
+            file_content = get_pdf(print_format_html)
+            file_size_bytes = len(file_content)
+
+            self.get_session_id(file_size_bytes)
+            self.get_media_id(file_content)
+            if self._media_id:
+                data['template']['components'].append({
+                    "type": "header",
+                    "parameters": [{
+                        "type": "document",
+                        "document": {
+                            "id": self._media_id,
+                            "filename": f"{self.get('reference_name')}.pdf"
+                        }
+                    }]
+                })
         if template.buttons:
             button_parameters = []
             for idx, btn in enumerate(template.buttons):
