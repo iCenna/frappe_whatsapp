@@ -271,7 +271,7 @@ class WhatsAppMessage(Document):
                 elif btn.button_type == "Call Phone":
                     button_parameters.append({
                         "type": "button",
-                        "sub_type": "phone_number",
+                        "sub_type": "VOICE_CALL",
                         "index": str(idx),
                         "parameters": [{"type": "text", "text": btn.phone_number}]
                     })
