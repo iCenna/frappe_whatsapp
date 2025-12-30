@@ -448,7 +448,7 @@ class WhatsAppMessage(Document):
         headers = {
             "authorization": f"OAuth {self._token}"
         }
-        url =  f"{self._url}/{self._version}/{self._phone_id}/media"
+        url =  f"{self._url}/{self._version}/{self._number_id}/media"
 
         files = {
             "file": file_content
