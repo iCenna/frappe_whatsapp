@@ -199,7 +199,7 @@ class WhatsAppMessage(Document):
             },
         }
 
-        if template.sample_values:
+        if self.body_param:
             field_names = template.field_names.split(",") if template.field_names else template.sample_values.split(",")
             parameters = []
             template_parameters = []
