@@ -269,6 +269,7 @@ class WhatsAppMessage(Document):
 
             self.get_session_id(file_size_bytes)
             self.get_media_id(file_content)
+            frappe.log_error("MEDIA ID",str(self._media_id))
             if self._media_id:
                 data['template']['components'].append({
                     "type": "header",
