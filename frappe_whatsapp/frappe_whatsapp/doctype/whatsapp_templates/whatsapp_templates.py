@@ -245,7 +245,10 @@ class WhatsAppTemplates(Document):
                 key = frappe.get_doc(self.doctype, self.name).get_document_share_key()
                 link = get_pdf_link(self.doctype, self.name)
                 pdf_link = f"{frappe.utils.get_url()}{link}&key={key}"
-            header.update({"example": {"header_handle": [self._media_id]}})
+            try:
+                header.update({"example": {"header_handle": [self._media_id]}})
+            except:
+                pass
 
         return header
 
