@@ -200,7 +200,7 @@ class WhatsAppMessage(Document):
         }
 
         if self.body_param:
-            field_names = template.field_names.split(",") if template.field_names else template.sample_values.split(",")
+            # field_names = template.field_names.split(",") if template.field_names else template.sample_values.split(",")
             parameters = []
             template_parameters = []
 
@@ -209,19 +209,19 @@ class WhatsAppMessage(Document):
                 for param in params:
                     parameters.append({"type": "text", "text": param})
                     template_parameters.append(param)
-            elif self.flags.custom_ref_doc:
-                custom_values = self.flags.custom_ref_doc
-                for field_name in field_names:
-                    value = custom_values.get(field_name.strip())
-                    parameters.append({"type": "text", "text": value})
-                    template_parameters.append(value)
-
-            else:
-                ref_doc = frappe.get_doc(self.reference_doctype, self.reference_name)
-                for field_name in field_names:
-                    value = ref_doc.get_formatted(field_name.strip())
-                    parameters.append({"type": "text", "text": value})
-                    template_parameters.append(value)
+            # elif self.flags.custom_ref_doc:
+            #     custom_values = self.flags.custom_ref_doc
+            #     for field_name in field_names:
+            #         value = custom_values.get(field_name.strip())
+            #         parameters.append({"type": "text", "text": value})
+            #         template_parameters.append(value)
+            #
+            # else:
+            #     ref_doc = frappe.get_doc(self.reference_doctype, self.reference_name)
+            #     for field_name in field_names:
+            #         value = ref_doc.get_formatted(field_name.strip())
+            #         parameters.append({"type": "text", "text": value})
+            #         template_parameters.append(value)
 
             self.template_parameters = json.dumps(template_parameters)
             data["template"]["components"].append(
