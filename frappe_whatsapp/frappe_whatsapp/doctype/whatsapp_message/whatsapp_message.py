@@ -435,6 +435,12 @@ class WhatsAppMessage(Document):
             headers=headers,
             data=payload
         )
+        try:
+            response_s = frappe.flags.integration_request
+            frappe.log_error("Media Response", response_s.text)
+        except:
+            pass
+
         self._media_id = response['h']
 
 
