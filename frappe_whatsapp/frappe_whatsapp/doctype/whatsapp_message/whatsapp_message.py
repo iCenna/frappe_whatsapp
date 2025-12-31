@@ -193,6 +193,7 @@ class WhatsAppMessage(Document):
                 if appointment:
                     patient_appointment = frappe.get_doc('Patient Appointment',
                                                          appointment)
+                    from icenna.pusher.pusher_sdk import PusherSDK
                     if self.get('message') == "Confirm":
                         if not patient_appointment.get('confirmation_date'):
                             frappe.db.set_value('Patient Appointment',
@@ -215,6 +216,9 @@ class WhatsAppMessage(Document):
                             whatsapp_message.insert(ignore_permissions=True,
                                                     ignore_mandatory=True)
                             frappe.db.commit()
+
+                            PusherSDK().push_updates("new_appointment", {'id': patient_appointment.get('name')})
+
                     elif self.get('message') == "Cancel" and (
                             patient_appointment.get('status') != "Cancelled" or patient_appointment.get(
                         'status') is not None):
@@ -234,6 +238,8 @@ class WhatsAppMessage(Document):
                         whatsapp_message.insert(ignore_permissions=True,
                                                 ignore_mandatory=True)
                         frappe.db.commit()
+                        PusherSDK().push_updates("new_appointment", {'id': patient_appointment.get('name')})
+
                     elif self.get('message') == "Reschedule" and (
                             patient_appointment.get('status') != "Cancelled" or patient_appointment.get(
                         'status') is not None):
@@ -251,6 +257,7 @@ class WhatsAppMessage(Document):
                         whatsapp_message.insert(ignore_permissions=True,
                                                 ignore_mandatory=True)
                         frappe.db.commit()
+
 
     def send_template(self):
         """Send template."""
