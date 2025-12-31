@@ -198,31 +198,33 @@ class WhatsAppMessage(Document):
                 "components": [],
             },
         }
-        if self.get('reference_doctype') and self.get('reference_name') and self.get('reference_doctype') == "POS Invoice":
-            print_format = "POS Provider Invoice"
-            letter_head = frappe.db.get_value("Company",
-                                              frappe.db.get_value("POS Invoice",
-                                                                  self.get('reference_name'),
-                                                                  'company'),
-                                              'default_letter_head')
-            print_format_html = frappe.get_print(doctype=self.get('reference_doctype'),
-                                                 name=self.get('reference_name'),
-                                                 print_format=print_format,
-                                                 letterhead=letter_head)
+        if self.get('reference_doctype') and self.get('reference_name'):
+            if self.get('reference_doctype') == "POS Invoice":
+                print_format = "POS Provider Invoice"
+                letter_head = frappe.db.get_value("Company",
+                                                  frappe.db.get_value("POS Invoice",
+                                                                      self.get('reference_name'),
+                                                                      'company'),
+                                                  'default_letter_head')
+                print_format_html = frappe.get_print(doctype=self.get('reference_doctype'),
+                                                     name=self.get('reference_name'),
+                                                     print_format=print_format,
+                                                     letterhead=letter_head)
 
-            file_content = get_pdf(print_format_html)
-            self.upload_media(file_content, self.get('reference_name'))
-            if self._media_id:
-                data['template']['components'].append({
-                    "type": "header",
-                    "parameters": [{
-                        "type": "document",
-                        "document": {
-                            "id": self._media_id,
-                            "filename": f"{self.get('reference_name')}.pdf"
-                        }
-                    }]
-                })
+                file_content = get_pdf(print_format_html)
+                self.upload_media(file_content, self.get('reference_name'))
+                if self._media_id:
+                    data['template']['components'].append({
+                        "type": "header",
+                        "parameters": [{
+                            "type": "document",
+                            "document": {
+                                "id": self._media_id,
+                                "filename": f"{self.get('reference_name')}.pdf"
+                            }
+                        }]
+                    })
+
 
         if self.body_param:
             # field_names = template.field_names.split(",") if template.field_names else template.sample_values.split(",")
@@ -230,14 +232,23 @@ class WhatsAppMessage(Document):
             template_parameters = []
 
             if self.body_param is not None:
-                if isinstance(self.body_param,str):
-                    params = list(json.loads(self.body_param).values())
+                if self.get('reference_doctype') == "POS Invoice":
+                    if isinstance(self.body_param,str):
+                        params = list(json.loads(self.body_param).values())
+                    else:
+                        params = list(self.body_param.values())
+                    # params = list(json.loads(self.body_param).values())
+                    for param in params:
+                        parameters.append({"type": "text",'parameter_name':"clinic_name", "text": param})
+                        template_parameters.append(param)
                 else:
-                    params = list(self.body_param.values())
-                # params = list(json.loads(self.body_param).values())
-                for param in params:
-                    parameters.append({"type": "text",'parameter_name':"clinic_name", "text": param})
-                    template_parameters.append(param)
+                    if isinstance(self.body_param,str):
+                        params = list(json.loads(self.body_param).values())
+                    else:
+                        params = list(self.body_param.values())
+                    for param in params:
+                        parameters.append({"type": "text", "text": param})
+                        template_parameters.append(param)
 
             self.template_parameters = json.dumps(template_parameters)
             data["template"]["components"].append(
