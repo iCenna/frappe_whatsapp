@@ -214,7 +214,7 @@ class WhatsAppMessage(Document):
                         whatsapp_message.set('to', self.get('from'))
                         whatsapp_message.set('use_template', 1)
                         whatsapp_message.set('message_type', 'Manual')
-                        whatsapp_message.set('message',"Please contact directly to Clinic to reschedule your appointment")
+                        whatsapp_message.set('message',"To reschedule your appointment, please contact clinic customer service team for assistance")
                         whatsapp_message.set('reply_to_message_id', self.get('message_id'))
                         whatsapp_message.set('content_type','text')
                         whatsapp_message.set('whatsapp_account',
