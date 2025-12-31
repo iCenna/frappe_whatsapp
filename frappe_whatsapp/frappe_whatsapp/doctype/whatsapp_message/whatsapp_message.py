@@ -201,11 +201,40 @@ class WhatsAppMessage(Document):
                                                 frappe.utils.now_datetime(),
                                                 update_modified=False)
                             frappe.db.commit()
+                            whatsapp_message = frappe.new_doc(self.doctype)
+                            whatsapp_message.set('type', 'Outgoing')
+                            whatsapp_message.set('to', self.get('from'))
+                            whatsapp_message.set('use_template', 1)
+                            whatsapp_message.set('message_type', 'Manual')
+                            whatsapp_message.set('message',
+                                                 """Your appointment has been successfully confirmed""")
+                            whatsapp_message.set('reply_to_message_id', self.get('message_id'))
+                            whatsapp_message.set('content_type', 'text')
+                            whatsapp_message.set('whatsapp_account',
+                                                 frappe.get_single('WhatsApp Settings').get('default_outgoing_account'))
+                            whatsapp_message.insert(ignore_permissions=True,
+                                                    ignore_mandatory=True)
+                            frappe.db.commit()
                     elif self.get('message') == "Cancel" and (
                             patient_appointment.get('status') != "Cancelled" or patient_appointment.get(
                             'status') is not None):
                         from icenna.user_api.calendar import cancel
                         cancel(appointment)
+                        whatsapp_message = frappe.new_doc(self.doctype)
+                        whatsapp_message.set('type', 'Outgoing')
+                        whatsapp_message.set('to', self.get('from'))
+                        whatsapp_message.set('use_template', 1)
+                        whatsapp_message.set('message_type', 'Manual')
+                        whatsapp_message.set('message',
+                                             """Your appointment has been successfully canceled.
+                                             If you wish to book a new appointment or need any assistance, please feel free to contact our customer service team""")
+                        whatsapp_message.set('reply_to_message_id', self.get('message_id'))
+                        whatsapp_message.set('content_type', 'text')
+                        whatsapp_message.set('whatsapp_account',
+                                             frappe.get_single('WhatsApp Settings').get('default_outgoing_account'))
+                        whatsapp_message.insert(ignore_permissions=True,
+                                                ignore_mandatory=True)
+                        frappe.db.commit()
                     elif self.get('message') == "Reschedule" and (
                             patient_appointment.get('status') != "Cancelled" or patient_appointment.get(
                             'status') is not None):
