@@ -184,6 +184,33 @@ class WhatsAppMessage(Document):
             self.send_template()
 
         self.create_whatsapp_profile()
+        if self.type == "Incoming":
+            reply_to = self.get('reply_to_message_id')
+            if reply_to:
+                appointment = frappe.db.get_value(self.doctype, {'message_id': reply_to,
+                                                                 'reference_doctype': 'Patient Appointment'},
+                                                  'reference_name')
+                if appointment:
+                    patient_appointment = frappe.get_doc('Patient Appointment',
+                                                         appointment)
+                    if self.get('message') == "Confirm":
+                        if not patient_appointment.get('confirmation_date'):
+                            frappe.db.set_value('Patient Appointment',
+                                                appointment,
+                                                'confirmation_date',
+                                                frappe.utils.now_datetime(),
+                                                update_modified=False)
+                            frappe.db.commit()
+                    elif self.get('message') == "Cancel" and (
+                            patient_appointment.get('status') != "Cancelled" or patient_appointment.get(
+                            'status') is not None):
+                        from icenna.user_api.calendar import cancel
+                        cancel(appointment)
+                    elif self.get('message') == "Reschedule" and (
+                            patient_appointment.get('status') != "Cancelled" or patient_appointment.get(
+                            'status') is not None):
+                        pass
+
 
     def send_template(self):
         """Send template."""
@@ -225,7 +252,6 @@ class WhatsAppMessage(Document):
                         }]
                     })
 
-
         if self.body_param:
             # field_names = template.field_names.split(",") if template.field_names else template.sample_values.split(",")
             parameters = []
@@ -233,16 +259,16 @@ class WhatsAppMessage(Document):
 
             if self.body_param is not None:
                 if self.get('reference_doctype') == "POS Invoice":
-                    if isinstance(self.body_param,str):
+                    if isinstance(self.body_param, str):
                         params = list(json.loads(self.body_param).values())
                     else:
                         params = list(self.body_param.values())
                     # params = list(json.loads(self.body_param).values())
                     for param in params:
-                        parameters.append({"type": "text",'parameter_name':"clinic_name", "text": param})
+                        parameters.append({"type": "text", 'parameter_name': "clinic_name", "text": param})
                         template_parameters.append(param)
                 else:
-                    if isinstance(self.body_param,str):
+                    if isinstance(self.body_param, str):
                         params = list(json.loads(self.body_param).values())
                     else:
                         params = list(self.body_param.values())
