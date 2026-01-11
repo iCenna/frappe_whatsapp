@@ -281,3 +281,9 @@ def update_message_status(data):
 	if conversation:
 		doc.conversation_id = conversation
 	doc.save(ignore_permissions=True)
+
+
+
+
+def send_pusher_update(channel,envent,data):
+	pass

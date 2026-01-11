@@ -15,6 +15,37 @@ from frappe.utils.pdf import get_pdf
 
 
 class WhatsAppMessage(Document):
+
+    def after_insert(self):
+        if self.get('type') != "Incoming":
+            return
+        data = {
+            "id": self.get("name"),
+            "message_id": self.get("message_id"),
+            "conversation_id": self.get("conversation_id"),
+            "type": self.get("type"),
+            "from": self.get('from'),
+            "to": self.get("to"),
+            "message": self.get("message") or "",
+            "content_type": self.get("content_type"),
+            "status": self.get("status"),
+            "profile_name": self.get("profile_name"),
+            "attach": self.get("attach"),
+            "is_reply": self.get("is_reply"),
+            "reply_to_message_id": self.get("reply_to_message_id"),
+            "message_type": self.get("message_type"),
+            "template": self.get("template"),
+            "created": self.get("creation"),
+            "modified": self.get("modified"),
+            "whatsapp_account": self.get("whatsapp_account")
+        }
+
+        from icenna.pusher.pusher_sdk import PusherSDK
+        pusher = PusherSDK()
+        channel_id = f'phone_{self.get("from")}'
+        pusher.push_updates(channel=channel_id, event="new_message", data=data)
+
+
     def validate(self):
         self.set_whatsapp_account()
 
@@ -257,7 +288,6 @@ class WhatsAppMessage(Document):
                         whatsapp_message.insert(ignore_permissions=True,
                                                 ignore_mandatory=True)
                         frappe.db.commit()
-
 
     def send_template(self):
         """Send template."""
