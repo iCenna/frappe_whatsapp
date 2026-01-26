@@ -7,6 +7,7 @@ from werkzeug.wrappers import Response
 
 @frappe.whitelist(allow_guest=True)
 def whatsapp_flow_endpoint(**kwargs):
+    frappe.log_error("Flow Data",str(kwargs))
     import base64
     from Crypto.PublicKey import RSA
     from Crypto.Cipher import PKCS1_OAEP, AES
