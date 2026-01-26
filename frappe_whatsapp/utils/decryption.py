@@ -1,6 +1,6 @@
 import json
 
-from cryptography.hazmat.primitives.hashes import SHA256
+from Crypto.Hash import SHA256
 
 import frappe
 
