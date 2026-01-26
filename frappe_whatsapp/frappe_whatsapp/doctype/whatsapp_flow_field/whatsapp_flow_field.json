@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-09 10:00:00.000000",
+ "creation": "2025-01-09 10:00:00",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -25,12 +25,12 @@
  ],
  "fields": [
   {
+   "description": "Screen ID this field belongs to",
    "fieldname": "screen",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Screen ID",
-   "reqd": 1,
-   "description": "Screen ID this field belongs to"
+   "reqd": 1
   },
   {
    "fieldname": "field_name",
@@ -44,7 +44,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Field Type",
-   "options": "TextInput\nTextArea\nDatePicker\nRadioButtonsGroup\nCheckboxGroup\nDropdown\nOptIn\nEmbeddedLink\nImage\nTextHeading\nTextSubheading\nTextBody\nTextCaption\nFooter",
+   "options": "TextInput\nTextArea\nDatePicker\nRadioButtonsGroup\nCheckboxGroup\nDropdown\nOptIn\nEmbeddedLink\nImage\nTextHeading\nTextSubheading\nTextBody\nTextCaption\nFooter\nForm",
    "reqd": 1
   },
   {
@@ -125,7 +125,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-09 10:00:00.000000",
+ "modified": "2026-01-26 14:48:21.534932",
  "modified_by": "Administrator",
  "module": "Frappe Whatsapp",
  "name": "WhatsApp Flow Field",
