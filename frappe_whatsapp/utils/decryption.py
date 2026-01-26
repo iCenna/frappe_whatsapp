@@ -41,5 +41,5 @@ def whatsapp_flow_endpoint(**kwargs):
     ciphertext, tag = aes_enc.encrypt_and_digest(json.dumps(result_json).encode("utf‑8"))
 
     encrypted_response = base64.b64encode(ciphertext + tag).decode("utf‑8")
-    return Response("encrypted_response", status=200)
+    return Response(encrypted_response, status=200)
     # return encrypted_response
