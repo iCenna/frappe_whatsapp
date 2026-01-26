@@ -282,8 +282,7 @@ def update_message_status(data):
 		doc.conversation_id = conversation
 	doc.save(ignore_permissions=True)
 
-
-
-
-def send_pusher_update(channel,envent,data):
+@frappe.whitelist(allow_guest=True)
+def handle_flow(**kwargs):
+	frappe.log_error("Flow Response",str(kwargs))
 	pass
