@@ -6,7 +6,6 @@ import frappe
 
 
 @frappe.whitelist(allow_guest=True)
-@frappe.validate_and_sanitize_search_inputs
 def whatsapp_flow_endpoint(**kwargs):
     import base64
     from Crypto.PublicKey import RSA
@@ -21,8 +20,8 @@ def whatsapp_flow_endpoint(**kwargs):
     iv = base64.b64decode(body.get("initial_vector"))
 
     # 3. Load private RSA key from file
-    with open("/path/to/private.pem", "rb") as f:
-        private_key = RSA.import_key(f.read(), passphrase="YOUR_PASSPHRASE")
+    with open("/home/dcode-frappe/private.pem", "rb") as f:
+        private_key = RSA.import_key(f.read(), passphrase="203799")
 
     # 4. RSA decrypt AES key
     rsa_cipher = PKCS1_OAEP.new(private_key, hashAlgo=SHA256)
