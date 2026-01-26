@@ -37,8 +37,8 @@ def whatsapp_flow_endpoint(**kwargs):
     ciphertext, tag = aes_enc.encrypt_and_digest(json.dumps(response_data).encode("utf-8"))
     encrypted_response = base64.b64encode(ciphertext + tag).decode("utf-8")
     # 7. Return Base64 string directly (not JSON)
-    frappe.local.response["type"] = "text/plain"
-    frappe.local.response["message"] = encrypted_response
+    # frappe.local.response["type"] = "text/plain"
+    # frappe.local.response["message"] = encrypted_response
 
     # except Exception as e:
     #     frappe.log_error(title="WhatsApp Flow Error", message=str(e))
