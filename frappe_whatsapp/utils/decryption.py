@@ -27,7 +27,7 @@ def whatsapp_flow_endpoint(**kwargs):
     decrypted = aes_cipher.decrypt_and_verify(enc_flow_data[:-16], enc_flow_data[-16:])
     req_json = json.loads(decrypted.decode("utf-8"))
     # Optional: Log request
-    frappe.log_error(title="WhatsApp Flow Request", message=json.dumps(req_json))
+    frappe.log_error(title="WhatsApp Flow Request", message=kwargs)
     # 5. Process your flow logic here
     response_data = {
         "screen": "example_screen",
@@ -38,7 +38,7 @@ def whatsapp_flow_endpoint(**kwargs):
     aes_enc = AES.new(aes_key, AES.MODE_GCM, nonce=inv_iv)
     ciphertext, tag = aes_enc.encrypt_and_digest(json.dumps(response_data).encode("utf-8"))
     encrypted_response = base64.b64encode(ciphertext + tag).decode("utf-8")
-    frappe.log_error("encrypted_response",f"{encrypted_response}")
+    # frappe.log_error("encrypted_response",f"{encrypted_response}")
     return Response(str(encrypted_response), status=200, content_type="text/plain")
 
     # 7. Return Base64 string directly (not JSON)
