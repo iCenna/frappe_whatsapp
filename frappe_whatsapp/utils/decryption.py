@@ -3,6 +3,8 @@ import base64
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.Hash import SHA256
+from werkzeug import Response
+
 import frappe
 from frappe import _
 
@@ -36,6 +38,8 @@ def whatsapp_flow_endpoint(**kwargs):
     aes_enc = AES.new(aes_key, AES.MODE_GCM, nonce=inv_iv)
     ciphertext, tag = aes_enc.encrypt_and_digest(json.dumps(response_data).encode("utf-8"))
     encrypted_response = base64.b64encode(ciphertext + tag).decode("utf-8")
+    return Response(encrypted_response, status=200, content_type="text/plain")
+
     # 7. Return Base64 string directly (not JSON)
     # frappe.local.response["type"] = "text/plain"
     # frappe.local.response["message"] = encrypted_response
