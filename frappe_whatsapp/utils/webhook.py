@@ -290,44 +290,5 @@ def update_message_status(data):
 
 @frappe.whitelist(allow_guest=True)
 def handle_flow_old(**kwargs):
-    private_key = """-----BEGIN ENCRYPTED PRIVATE KEY-----
-MIIFHDBOBgkqhkiG9w0BBQ0wQTApBgkqhkiG9w0BBQwwHAQImSofpWe/OQECAggA
-MAwGCCqGSIb3DQIJBQAwFAYIKoZIhvcNAwcECAxthCehR9AJBIIEyIE+387jOsw3
-ftFfJhLBJnEA7NKLE/qaWveX48AUTerYdiapPGKuaLSA02LmwYTkOBIxMMQ4tlAK
-cGmS+BzekCtEfwBYFYWYBfGMfbp1joj5muY2LDuYApvmj/503zyt3+s/dQ3wiVti
-LRvY9d4tWueYTE4P5LKR1zfh0w8B5suTKHDByvpWeGo15ic9Y51vYmMnNmFb+BZq
-xWdHL8KNb+0e/qPIcslb/rCL6fkR3Mkqrcgv/s/G9TAnAqS50Xay1L+vWkWGxBbS
-F/mGOb4noOXFoyaYGqJUht9uCwHSFmPpwOgehjwWopwRcmpLq+GnHr3kRMivLjob
-QLhsHm0HDd1iYugU0NC2CLgZoXO1ORlDeqlNAQbpj8RPySgTTV8VpgwMiVciUeQi
-ZLUZchR7A4eeavapY9S5epFliGYuABQhxcqqpOeBT+hs83KU+UBFhEAOPAXNUQJC
-+MWkfTr82amM7M06SnqZQKivVqVvmMXPICqkvT5xuCfBMRS0mvd2JD3And0pAMGD
-IpujV+MtOKVkRxNeXipQ77YAvLLJ2L3qNHxqGc1qHet+hjV13WlpBgc1cjdxfh7y
-5tJndEObzQKtfaUjtXxoqbY2yoyUE0quGA9KOLlEJAwGSxIuKrnKIP5EKtCjgEig
-iY9lWxlj0dzhVkbCcTVkXQfdM79Iw2kbwVxC/ZcRlk9GALGnt7Kn5cI7MT+VVhKd
-8WHPJgbiOzdKpYUCsaFeb6Agn9SVRybVFo0/Xei5DaLZmK7SPRSLrKx3V6XQ62Ol
-NvEUp2/MBdWyDYnd7zVRqegAsbp2MTOoqEaudQUbBsBBdgpjXTH1ZZfG+96MwgYi
-GNmfpKrL6X2Ir55EF74J04AzeqgytTcaoez3jWJ13r+kNh/MW5fWHTupuQH7G3AQ
-upFIC3GhupZ2w6EQ2eNKlqh9XcVH+3/goOhPsnwq/h3bV6HuKxdCjl6fKpZh+IzX
-Qh1940d94JDSZ4gYYrFfqj8PB3CXraTKl5tCJHAtxGciU+Apkr4SSzipqXS3ax5C
-EBTvBnqYgc6p+SBpj4hpEmfolkQN7CMFYUrPe7DzSfAoOiIlMVWKp3M3P2s1fQy7
-DYftADm90aC57F5zXjbzsQLrc43PYDHo5Ri0c1S4pryfcjQ+jzZL1LZ6ivMerrIF
-4jmStrHHxBSixVRdR0bt5/4RmAhtPGCCJ9HuUrKxNEpSNu99IIaiUKkZB7bp2nXC
-2+e9aSz99itSIzE4lLKz1+Ld221z+ms15vDu0Rg9apXB4wftWVsiHJCFG/6D7jIY
-rDmCGInP/gBWGHnFrRsGexzsQ/+TLfIEN2NW4TYo40MxmsKqhrvHFs4YFPtmzIFE
-Q7+JGRa1NHwcODgjYhsdCfxbh3bCTtZ7ub8F+jIBxYQCzbfJaj+sjGUM65Yli/np
-GgDkJOkFKW9uFnToX4Iguu6oqTXoFiULX//BbSVbPpyCQNlBy4aguMhNLoZ2CPEO
-XD4CKQ9jrV2quAPOfAWNtC2bZ0wWF3J5zA0n1ZLMGFChYDRLoYSQrO71YVb78O/O
-blaAX/t/Rh0yr6Z/7atOWcOO8C6LBFAzE1jjhlOD0wbhJrYnnRLqb3Rd1exgJBI3
-4jh1tk82JqnCIB2M+Miegg==
------END ENCRYPTED PRIVATE KEY-----"""
-    payload = kwargs
-
-    decrypted_data, aes_key, iv = decrypt_request(payload)
-    print("DECRYPTED FLOW DATA:", decrypted_data)
-
-    response_json = handle_flow(decrypted_data)
-    encrypted_response = encrypt_response(response_json, aes_key, iv)
-
-    return Response(encrypted_response, mimetype="text/plain", status=200)
     frappe.log_error("Flow Response", str(kwargs))
     pass
