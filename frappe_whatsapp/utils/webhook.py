@@ -373,7 +373,7 @@ blaAX/t/Rh0yr6Z/7atOWcOO8C6LBFAzE1jjhlOD0wbhJrYnnRLqb3Rd1exgJBI3
 4jh1tk82JqnCIB2M+Miegg==
 -----END ENCRYPTED PRIVATE KEY-----"""
 
-PRIVATE_KEY_PASSWORD = "230799"
+PRIVATE_KEY_PASSWORD = None
 
 # ---------------------------- CRYPTO HELPERS ----------------------------
 def load_private_key():
@@ -434,7 +434,7 @@ def whatsapp_flow():
     payload = frappe.local.request.json
     decrypted_data, aes_key, iv = decrypt_request(payload)
 
-    frappe.logger().info(f"DECRYPTED FLOW DATA: {decrypted_data}")
+    # frappe.logger().info(f"DECRYPTED FLOW DATA: {decrypted_data}")
 
     response_json = handle_flow(decrypted_data)
     encrypted_response = encrypt_response(response_json, aes_key, iv)
