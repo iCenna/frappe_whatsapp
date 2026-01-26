@@ -29,10 +29,8 @@ def whatsapp_flow_endpoint(**kwargs):
     # Optional: Log request
     frappe.log_error(title="WhatsApp Flow Request", message=kwargs)
     # 5. Process your flow logic here
-    response_data = {
-        "screen": "example_screen",
-        "data": {"foo": "bar"}
-    }
+    response_data = {"data": {"status": "active"}}
+
     # 6. Encrypt response with inverted IV
     inv_iv = bytes(~b & 0xFF for b in iv)
     aes_enc = AES.new(aes_key, AES.MODE_GCM, nonce=inv_iv)
