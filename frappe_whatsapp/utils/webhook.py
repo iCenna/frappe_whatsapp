@@ -291,4 +291,4 @@ def update_message_status(data):
 @frappe.whitelist(allow_guest=True)
 def handle_flow_old(**kwargs):
     frappe.log_error("Flow Response", str(kwargs))
-    pass
+    return Response("Success", status=200)
