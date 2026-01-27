@@ -182,8 +182,8 @@ class WhatsAppMessage(Document):
                             "flow_cta": self.flow_cta or flow_doc.flow_cta or "Open",
                             "flow_action": "navigate",
                             "flow_action_payload": {
-                                "screen": flow_screen,
-                                "data" : flow_data
+                                "screen": flow_screen
+                                # "data" : flow_data
                             }
                         }
                     }
