@@ -161,7 +161,147 @@ class WhatsAppMessage(Document):
                             "flow_cta": self.flow_cta or flow_doc.flow_cta or "Open",
                             "flow_action": "navigate",
                             "flow_action_payload": {
-                                "screen": flow_screen
+                                "screen": flow_screen,
+                                "data": {
+                                    "department": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "__example__": [
+                                            {
+                                                "id": "dressing",
+                                                "title": "العناية بالجروح - Dressing"
+                                            },
+                                            {
+                                                "id": "medical_consultations",
+                                                "title": "الزيارة المنزلية - Medical Consultations"
+                                            },
+                                            {
+                                                "id": "nurse_visit",
+                                                "title": "الرعاية التمريضية - NURSE VISIT"
+                                            }
+                                        ]
+                                    },
+                                    "location": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "__example__": [
+                                            {
+                                                "id": "1",
+                                                "title": "Jeddah Zone 111"
+                                            },
+                                            {
+                                                "id": "2",
+                                                "title": "Jeddah Zone 212"
+                                            },
+                                            {
+                                                "id": "3",
+                                                "title": "Jeddah Zone 344"
+                                            },
+                                            {
+                                                "id": "4",
+                                                "title": "Jeddah Zone 455"
+                                            }
+                                        ]
+                                    },
+                                    "is_location_enabled": {
+                                        "type": "boolean",
+                                        "__example__": True
+                                    },
+                                    "date": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "__example__": [
+                                            {
+                                                "id": "2026-02-01",
+                                                "title": "Mon Feb 01 2026"
+                                            },
+                                            {
+                                                "id": "2026-02-02",
+                                                "title": "Tue Feb 02 2026"
+                                            },
+                                            {
+                                                "id": "2026-02-03",
+                                                "title": "Wed Feb 03 2026"
+                                            }
+                                        ]
+                                    },
+                                    "is_date_enabled": {
+                                        "type": "boolean",
+                                        "__example__": True
+                                    },
+                                    "time": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "__example__": [
+                                            {
+                                                "id": "10:30",
+                                                "title": "10:30"
+                                            },
+                                            {
+                                                "id": "11:00",
+                                                "title": "11:00",
+                                                "enabled": True
+                                            },
+                                            {
+                                                "id": "11:30",
+                                                "title": "11:30"
+                                            },
+                                            {
+                                                "id": "12:00",
+                                                "title": "12:00",
+                                                "enabled": True
+                                            },
+                                            {
+                                                "id": "12:30",
+                                                "title": "12:30"
+                                            }
+                                        ]
+                                    },
+                                    "is_time_enabled": {
+                                        "type": "boolean",
+                                        "__example__": True
+                                    }
+                                }
                             }
                         }
                     }
