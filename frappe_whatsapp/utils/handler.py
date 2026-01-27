@@ -28,7 +28,7 @@ SCREEN_DEFINITIONS = {
 
 def load_departments():
     return [
-        {"id": "shopping", "title": "Shopping & Groceries"},
+        {"id": "shopping", "title": "Shopping & Groceries TS"},
         {"id": "clothing", "title": "Clothing & Apparel"},
         {"id": "home", "title": "Home Goods & Decor"},
         {"id": "electronics", "title": "Electronics & Appliances"},
