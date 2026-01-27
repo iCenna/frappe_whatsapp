@@ -180,10 +180,10 @@ class WhatsAppMessage(Document):
                             "flow_message_version": "3",
                             "flow_id": flow_doc.flow_id,
                             "flow_cta": self.flow_cta or flow_doc.flow_cta or "Open",
-                            "flow_action": "navigate",
+                            "flow_action": "data_exchange",
                             "flow_action_payload": {
-                                "screen": flow_screen,
-                                "action": "init"
+                                "screen": flow_screen
+                                # "flow_action": "data_exchange"
                                 # "data" : flow_data
                             }
                         }
