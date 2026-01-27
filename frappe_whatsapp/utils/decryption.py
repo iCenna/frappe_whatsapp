@@ -40,7 +40,8 @@ def whatsapp_flow_endpoint(**kwargs):
     action = req_json.get('action')
     if action == 'ping':
         response_data = {"data": {"status": "active"}}
-    elif action == "INIT":
+    else:
+    # elif action == "INIT":
         from frappe_whatsapp.utils.handler import screens
         response_data = screens(action,req_json)
         frappe.log_error(title="WhatsApp Flow Request", message=response_data)
