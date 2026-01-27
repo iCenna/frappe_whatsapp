@@ -74,7 +74,7 @@ def screens(action, payload=None):
         return response
 
     if action == "data_exchange":
-        action = payload.get('department_selected')
+        action = payload.get('data').get('trigger')
     # Department selected
     if action == "department_selected":
         response = SCREEN_DEFINITIONS["APPOINTMENT"].copy()
