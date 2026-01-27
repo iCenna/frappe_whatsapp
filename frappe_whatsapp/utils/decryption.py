@@ -8,6 +8,10 @@ from werkzeug import Response
 import frappe
 from frappe import _
 
+
+
+
+
 @frappe.whitelist(allow_guest=True)
 def whatsapp_flow_endpoint(**kwargs):
     # try:
@@ -37,8 +41,9 @@ def whatsapp_flow_endpoint(**kwargs):
     if action == 'ping':
         response_data = {"data": {"status": "active"}}
     elif action == "INIT":
-        pass
-
+        from frappe_whatsapp.utils.handler import screens
+        response_data = screens(action,req_json)
+        frappe.log_error(title="WhatsApp Flow Request", message=response_data)
 
     # 6. Encrypt response with inverted IV
     inv_iv = bytes(~b & 0xFF for b in iv)
