@@ -17,8 +17,12 @@ def whatsapp_flow_endpoint(**kwargs):
     enc_flow_data = base64.b64decode(body.get("encrypted_flow_data"))
     iv = base64.b64decode(body.get("initial_vector"))
     # 2. Load private key
-    with open("/home/dcode-frappe/private.pem", "rb") as f:
-        private_key = RSA.import_key(f.read(), passphrase="203799")
+    private_key = frappe.get_single('WhatsApp Settings').get('secret_key')
+    if not private_key:
+        return
+    # with open("/home/dcode-frappe/private.pem", "rb") as f:
+    #     private_key = RSA.import_key(f.read(), passphrase="203799")
+    private_key = RSA.import_key(private_key, passphrase="203799")
     # 3. RSA decrypt AES key
     rsa_cipher = PKCS1_OAEP.new(private_key, hashAlgo=SHA256)
     aes_key = rsa_cipher.decrypt(enc_aes_key)
