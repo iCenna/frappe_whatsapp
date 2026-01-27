@@ -91,6 +91,7 @@ def screens(action, payload=None):
         response = SCREEN_DEFINITIONS["APPOINTMENT"].copy()
         response["data"] = {
             **response["data"],
+            "department": load_departments(),
             "location": load_locations(payload.get("department")),
             "date": load_dates(),
             "is_date_enabled": True,
@@ -102,6 +103,9 @@ def screens(action, payload=None):
         response = SCREEN_DEFINITIONS["APPOINTMENT"].copy()
         response["data"] = {
             **response["data"],
+            "department": load_departments(),
+            "location": load_locations(payload.get("department")),
+            "date": load_dates(),
             "time": load_times(),
             "is_time_enabled": True,
         }
