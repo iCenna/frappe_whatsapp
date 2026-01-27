@@ -22,6 +22,17 @@ SCREEN_DEFINITIONS = {
     "TERMS": {
         "screen": "TERMS",
         "data": {}
+    },
+    "SUCCESS": {
+        "screen": "SUCCESS",
+        "data": {
+            "extension_message_response": {
+                "params": {
+                    "flow_token": "REPLACE_FLOW_TOKEN",
+                    "some_param_name": "PASS_CUSTOM_VALUE",
+                },
+            },
+        },
     }
 }
 
@@ -110,5 +121,17 @@ def screens(action, payload=None):
             "is_time_enabled": True,
         }
         return response
+
+    if payload.get('screen') == "DETAILS":
+        return {
+            **SCREEN_DEFINITIONS["SUCCESS"],
+            "data": {
+                "extension_message_response": {
+                    "params": {
+                        "flow_token": payload.get('flow_token')
+                    }
+                }
+            }
+        }
 
     return {}
