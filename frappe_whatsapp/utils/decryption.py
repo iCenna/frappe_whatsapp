@@ -31,7 +31,7 @@ def whatsapp_flow_endpoint(**kwargs):
     decrypted = aes_cipher.decrypt_and_verify(enc_flow_data[:-16], enc_flow_data[-16:])
     req_json = json.loads(decrypted.decode("utf-8"))
     # Optional: Log request
-    frappe.log_error(title="WhatsApp Flow Request", message=kwargs)
+    frappe.log_error(title="WhatsApp Flow Request", message=req_json)
     # 5. Process your flow logic here
     action = req_json.get('action')
     if action == 'ping':
