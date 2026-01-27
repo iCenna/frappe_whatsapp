@@ -11,7 +11,8 @@
   "column_break_skjo",
   "appointment_template",
   "welcome_template",
-  "service_request_template"
+  "service_request_template",
+  "secret_key"
  ],
  "fields": [
   {
@@ -47,12 +48,17 @@
    "fieldtype": "Link",
    "label": "Service Request Template",
    "options": "WhatsApp Templates"
+  },
+  {
+   "fieldname": "secret_key",
+   "fieldtype": "Small Text",
+   "label": "Secret Key"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-01-27 13:13:05.960866",
+ "modified": "2026-01-27 14:28:31.298913",
  "modified_by": "Administrator",
  "module": "Frappe Whatsapp",
  "name": "WhatsApp Settings",
